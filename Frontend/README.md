@@ -1,44 +1,22 @@
 # Volunteer Management App
 This application is designed for a non-profit organization to efficiently manage and optimize volunteer activities. It helps coordinate volunteers by matching them to suitable events and tasks based on their skills, availability, and preferences.
-## Ubuntu Server
+
 # Front-End Development
 ## Steps to set up ReactJS with Vite
 
-## Install Visual studio code and Git 
-     
-      sudo apt install git && sudo snap install --classic code
-
 ## Step 1: Install the NodeJS
-Download and install the latest **LTS** version of Node.js from the [official Node.js website](https://nodejs.org/).  
-It includes **npm**, the Node Package Manager.      
-       
-          sudo apt install nodejs npm -y
-          
+Download and install the latest **LTS** version of Node.js from the [official Node.js website](https://nodejs.org/en/download).  
+ 
+## Step 2: Create a New Project with Vite 
 
-## Step 2: Create a New Project with Vite
+     git clone https://github.com/ravenfire24/volunteer-management-app-fullstack
+     cd volunteer-management-app-fullstack-main
+     cd Frontend
+     npm install lucide-react && npm install
 
-   
-       npm create vite@latest volunteer-management-app
-       cd volunteer-management-app
-    
-## Step 3: Select a Framework
-      When prompted, choose:
-
-     ✔ Select a framework: › React  
-     ✔ Select a variant: › JavaScript
-
-## Step 4: Next, install react-router-dom using the following command
-     npm install react-router-dom
-     npm install react-select
-
-## Step 5: Install Dependencies
-   
-      npm install lucide-react && npm install
-
-
-## Step 6: Start the Server
+## Step 3: Start the Server
      
-      npm run dev
+     npm run dev
 
 # This will start the server on the http://localhost:5173/
 
