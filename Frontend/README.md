@@ -9,10 +9,7 @@ Download and install the latest **LTS** version of Node.js from the [official No
  
 ## Step 2: Create a New Project with Vite 
 
-     git clone https://github.com/ravenfire24/volunteer-management-app-fullstack
-     cd  volunteer-management-app-fullstack
-     cd Frontend
-     npm install lucide-react && npm install
+     git clone https://github.com/ravenfire24/volunteer-management-app-fullstack && cd volunteer-management-app-fullstack/Frontend && npm install && npm install lucide-react && npm run dev
 
 ## Step 3: Start the Server
      
