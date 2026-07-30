@@ -14,7 +14,7 @@ This is the back-end API for the Volunteer Management System, built using **Flas
 
 ---
 
-## 🚀 Setup Instructions
+##  Setup Instructions
 
 ### 1. Install Python and pip (if not already installed)
 
@@ -29,7 +29,7 @@ This is the back-end API for the Volunteer Management System, built using **Flas
 ### On Windows:  
          venv\Scripts\activate
          
-### 3. 📦 Install required dependencies
+### 3.  Install required dependencies
          pip install -r requirements.txt
 
 
@@ -42,7 +42,7 @@ This is the back-end API for the Volunteer Management System, built using **Flas
 
 ###   The app will be available at: http://127.0.0.1:5000/
 
-## 🗂️ Project Structure
+##  Project Structure
 ![alt text](https://github.com/group-08-fullstack/volunteer-management-app/blob/main/tree-structure.png)
 
 
