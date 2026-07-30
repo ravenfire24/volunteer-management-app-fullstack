@@ -15,7 +15,7 @@ Instructions for installing **MySQL Server** and **MySQL Workbench** on **Linux*
 ## 🐧 Linux
 
 ##  Ubuntu / Debian-based distributions
-## 📦 Install required dependencies
+##  Install required dependencies
        pip install -r requirements.txt
 ### 1. Install MySQL Server
        sudo apt update && apt install mysql-server && pip install "Flask<2.3" && pip install flask-mysqldb
@@ -25,7 +25,7 @@ Instructions for installing **MySQL Server** and **MySQL Workbench** on **Linux*
        sudo systemctl status mysql
 ### 4. Install MySQL Workbench
        sudo snap install mysql-workbench-community
-###  🪟 Windows
+###   Windows
   ### 1. Download the MySQL Installer
 
 [Go to the MySQL Installer Download Page](https://dev.mysql.com/downloads/installer/)
@@ -45,7 +45,7 @@ Choose:
          Open MySQL Workbench
          Connect to the Local MySQL Server using the credentials you set
 
-### 🍎 macOS
+###  macOS
 ### 1. Install Homebrew (if not installed)
 
        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -64,14 +64,14 @@ Choose:
   - Drag and drop the app into your `/Applications` folder
 
 
-### 🧪 Testing the Setup
+###  Testing the Setup
 
        mysql -u root -p
 ###  You should now be in the MySQL shell and can run SQL commands like:
 
        SHOW DATABASES;
 
-## 🗂️ Project Structure
+##  Project Structure
 ![alt text](https://github.com/group-08-fullstack/volunteer-management-app/blob/main/tree-structure.png)
 
 
