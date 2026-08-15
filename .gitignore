@@ -27,9 +27,14 @@ node_modules/
 
 # python virtual environment
 **/venv/
+.venv/
 
 # Enviroment variables
 backend/api/.env
+Backend/api/.env
+.env
+.env.*
+!.env.example
 
 # Don't commit cache
 __pycache__/

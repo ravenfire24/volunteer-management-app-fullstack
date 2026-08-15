@@ -37,6 +37,9 @@ def create_app(config_class):
     # setup flask_restful
     api = Api(app)
 
+    @app.get('/api/health')
+    def health():
+        return {"status": "ok"}
 
     # Setup JWT authentication
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") # Grab enviroment variable

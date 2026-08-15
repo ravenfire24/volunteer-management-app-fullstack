@@ -25,7 +25,7 @@ CREATE TABLE notifications (
   user_id INT NOT NULL,
   message TINYTEXT NOT NULL,
   event_date DATE NOT NULL,
-  read TINYINT NOT NULL,
+  `read` TINYINT NOT NULL,
   PRIMARY KEY (notification_id, user_id),
   UNIQUE KEY notification_id_UNIQUE (notification_id),
   KEY user_id_idx (user_id),
@@ -122,4 +122,3 @@ CREATE TABLE volunteermgnt.verification_codes (
     ON DELETE CASCADE
     ON UPDATE NO ACTION
 );
-
