@@ -45,30 +45,7 @@ https://volunteer-management-app-fullstack.vercel.app
 
 ###   The app will be available at: http://127.0.0.1:5000/
 
-## Vercel + Aiven MySQL
 
-This repo now includes a Vercel entrypoint at `api/index.py`, a `vercel.json`
-that serves the Vite frontend and rewrites `/api/...` to Flask, and backend
-config that reads MySQL settings from environment variables.
-
-Set these environment variables in Vercel for the project:
-
-```text
-MYSQL_HOST=mysql-vma-ttorta005.g.aivencloud.com
-MYSQL_PORT=21957
-MYSQL_USER=avnadmin
-MYSQL_PASSWORD=<your Aiven password>
-MYSQL_DB=defaultdb
-JWT_SECRET_KEY=<long random secret>
-MYSQL_SSL_CA_CONTENT=<paste the full contents of ca.pem>
-```
-
-For local backend development, copy `Backend/api/.env.example` to
-`Backend/api/.env` and fill in the same values. Locally you can use
-`MYSQL_SSL_CA=C:\Users\beyan\Downloads\ca.pem` instead of
-`MYSQL_SSL_CA_CONTENT`.
-
-After deployment, visit `/api/health`; it should return `{"status":"ok"}`.
 
 ##  Project Structure
 ![alt text](https://github.com/group-08-fullstack/volunteer-management-app/blob/main/tree-structure.png)
