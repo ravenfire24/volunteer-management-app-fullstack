@@ -205,6 +205,8 @@ class EmailVerification(Resource):
 
             if not sender_password and not current_app.config.get('ALLOW_MISSING_EMAIL_PASSWORD'):
                 return {'message': 'Email password is not configured.'}, 500
+            if sender_password:
+                sender_password = sender_password.replace(" ", "")
 
             msg['From'] = sender_email
 
