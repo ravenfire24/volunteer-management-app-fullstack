@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import {register, verifyEmail,confirmCode} from '../helpers/authHelpers';
-import { data } from 'react-router-dom';
+import {confirmCode} from '../helpers/authHelpers';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function VerificationInput({email, showVerification, setshowVerification}) {
+export default function VerificationInput({email, setshowVerification}) {
     const [inputValue, setInputValue] = useState('');
     const navigate = useNavigate();
 
@@ -20,8 +19,9 @@ export default function VerificationInput({email, showVerification, setshowVerif
     const confirm_result = await confirmCode(data); // Check with server
 
     if (confirm_result) {
-            navigate("/login");
-          }
+        setshowVerification(false);
+        navigate("/login", { replace: true });
+    }
 
     else{
         alert('Incorrect verfication code');
@@ -41,15 +41,24 @@ export default function VerificationInput({email, showVerification, setshowVerif
         <style>
         {`
         .verification-container {
+            box-sizing: border-box;
             padding: 16px;
             background-color: #fff;
             border: 1px solid #ccc;
-            width: 300px;
+            width: 100%;
+            margin-bottom: 16px;
             border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
+        .verification-message {
+            color: #374151;
+            font-size: 0.875rem;
+            margin: 0 0 12px 0;
+        }
+
         .verification-input {
+            box-sizing: border-box;
             width: 100%;
             padding: 8px;
             margin-bottom: 12px;
@@ -81,6 +90,9 @@ export default function VerificationInput({email, showVerification, setshowVerif
         `}
     </style>
         <div className="verification-container">
+        <p className="verification-message">
+            Enter the verification code sent to {email}.
+        </p>
         <input
             type="text"
             className="verification-input"

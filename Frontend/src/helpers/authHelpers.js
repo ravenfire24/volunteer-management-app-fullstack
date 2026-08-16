@@ -25,16 +25,16 @@ export async function login(data){
       sessionStorage.setItem("user_role", parsed.user.role);
 
       // Login was successful
-      return true;
+      return { success: true, message: parsed.message };
     }
     else{
         // Login failed
-        alert(parsed.message);
-        return false;
+        return { success: false, message: parsed.message || parsed.error || 'Login failed' };
       }
   }
   catch (error){
       console.log('There was an error', error);
+      return { success: false, message: 'There was an error logging in' };
     }
 }
 
@@ -86,13 +86,14 @@ export async function verifyEmail(data){
         return true;
       }
       else{
-        // // Email was unsuccessfully sent
-        // alert(parsed.message);
+        alert(parsed.message || parsed.error || 'Unable to send verification email');
         return false;
       }
   }
   catch (error){
     console.log('An error occured', error);
+    alert('Unable to send verification email');
+    return false;
   }
 }
 
@@ -117,13 +118,14 @@ export async function confirmCode(data){
         return true;
       }
       else{
-        // verfication failed
-        // alert(parsed.message);
+        alert(parsed.message || parsed.error || 'Verification failed');
         return false;
       }
   }
   catch (error){
     console.log('An error occured', error);
+    alert('Verification failed');
+    return false;
   }
 }
 

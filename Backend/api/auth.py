@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, current_app
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (
     create_access_token, create_refresh_token,
@@ -49,14 +49,6 @@ class Register(Resource):
                 cursor.execute(
                     "INSERT INTO usercredentials (email, password_hash, role, created_at) VALUES (%s, %s, %s, %s)",
                     (email, password, role, central_time)
-                )
-                cursor.execute(
-                    """
-                    INSERT INTO verification_codes (email, code, verified)
-                    VALUES (%s, %s, %s)
-                    ON DUPLICATE KEY UPDATE verified = VALUES(verified)
-                    """,
-                    (email, 0, 1)
                 )
                 conn.commit()
             return {"message": "Registration successful!"}, 201
@@ -202,15 +194,19 @@ class EmailVerification(Resource):
             # Create email message
             msg = EmailMessage()
             msg['Subject'] = 'Email Verification'
-            msg['From'] = 'your@gmail.com'
             msg['To'] = user_email
             msg.set_content(f"Your verification code is {code}")
 
             # Setup config for server connection
             port = 465
             smtp_server = "smtp.gmail.com"
-            sender_email = "volunteerscheduleplatform@gmail.com"
-            sender_password = os.getenv("email_password")
+            sender_email = os.getenv("EMAIL_SENDER", "volunteerscheduleplatform@gmail.com")
+            sender_password = os.getenv("email_password") or os.getenv("EMAIL_PASSWORD")
+
+            if not sender_password and not current_app.config.get('ALLOW_MISSING_EMAIL_PASSWORD'):
+                return {'message': 'Email password is not configured.'}, 500
+
+            msg['From'] = sender_email
 
             # Create connection and send message
             context = ssl.create_default_context()

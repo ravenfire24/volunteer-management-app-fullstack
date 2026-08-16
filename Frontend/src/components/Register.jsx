@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, UserPlus, Mail } from 'lucide-react';
-import {register} from '../helpers/authHelpers';
+import {register, verifyEmail} from '../helpers/authHelpers';
 
 
 export default function Register({ users, setUsers }) {
@@ -25,7 +25,17 @@ export default function Register({ users, setUsers }) {
     const register_result = await register(UserRegister);
 
     if(register_result){
-      navigate('/login');
+      const verify_result = await verifyEmail(UserRegister);
+
+      if (verify_result) {
+        navigate('/login', {
+          state: {
+            verificationEmail: email.toLowerCase(),
+            role,
+            showVerification: true
+          }
+        });
+      }
     }
 
   };

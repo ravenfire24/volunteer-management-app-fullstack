@@ -18,6 +18,7 @@ class Config:
     MYSQL_SSL_CA_CONTENT = os.getenv('MYSQL_SSL_CA_CONTENT')
 
 class TestConfig(Config):
+    ALLOW_MISSING_EMAIL_PASSWORD = True
     MYSQL_HOST = os.getenv('TEST_MYSQL_HOST', Config.MYSQL_HOST)
     MYSQL_PORT = int(os.getenv('TEST_MYSQL_PORT', str(Config.MYSQL_PORT)))
     MYSQL_USER = os.getenv('TEST_MYSQL_USER', Config.MYSQL_USER)

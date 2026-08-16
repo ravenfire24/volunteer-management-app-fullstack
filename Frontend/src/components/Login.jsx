@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { User, Lock, UserCheck, Mail } from 'lucide-react';
-import {login} from '../helpers/authHelpers';
+import {login, verifyEmail} from '../helpers/authHelpers';
+import VerificationInput from './verification';
 
 export default function Login({ users, setLoggedInUser }) {
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.verificationEmail || '');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('volunteer');
+  const [role, setRole] = useState(location.state?.role || 'volunteer');
+  const [showVerification, setShowVerification] = useState(Boolean(location.state?.showVerification));
+  const [verificationEmail, setVerificationEmail] = useState(location.state?.verificationEmail || '');
 
   const navigate = useNavigate();
 
@@ -57,7 +61,7 @@ export default function Login({ users, setLoggedInUser }) {
     const result = await login(UserLogin);
     console.log('3. Login result:', result);
 
-    if (result) {
+    if (result?.success) {
       console.log('4. Login successful, getting token from sessionStorage');
       
       // Your login helper already stores the token in sessionStorage
@@ -95,7 +99,14 @@ export default function Login({ users, setLoggedInUser }) {
       }
     } else {
       console.log('13. Login failed');
-      alert('Invalid credentials or login failed');
+      if (result?.message?.includes('Account not verified')) {
+        const normalizedEmail = email.toLowerCase();
+        setVerificationEmail(normalizedEmail);
+        setShowVerification(true);
+        await verifyEmail({ ...UserLogin, email: normalizedEmail });
+      } else {
+        alert(result?.message || 'Invalid credentials or login failed');
+      }
     }
 }
 
@@ -295,6 +306,13 @@ export default function Login({ users, setLoggedInUser }) {
             <UserCheck color="#3b82f6" size={24} />
             <h2 className="card-title">Welcome Back</h2>
           </div>
+
+          {showVerification && (
+            <VerificationInput
+              email={verificationEmail || email}
+              setshowVerification={setShowVerification}
+            />
+          )}
 
           <div className="login-form">
             {/* Role Selection */}
