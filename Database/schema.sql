@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS volunteermgnt;
-USE volunteermgnt;
+CREATE DATABASE IF NOT EXISTS defaultdb;
+USE defaultdb;
 
 CREATE TABLE eventdetails (
   event_id INT NOT NULL AUTO_INCREMENT,
@@ -110,15 +110,10 @@ CREATE TABLE volunteerhistory (
   CONSTRAINT history_volunteer_id FOREIGN KEY (volunteer_id) REFERENCES usercredentials (user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE volunteermgnt.verification_codes (
+CREATE TABLE defaultdb.verification_codes (
   email VARCHAR(100) NOT NULL,
   code INT NOT NULL,
   verified BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (email),
-  UNIQUE INDEX email_UNIQUE (email ASC),
-  CONSTRAINT fk_codes
-    FOREIGN KEY (email)
-    REFERENCES volunteermgnt.usercredentials (email)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
+  UNIQUE INDEX email_UNIQUE (email ASC)
 );

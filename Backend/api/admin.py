@@ -132,7 +132,7 @@ class AdminDashboard(Resource):
             # Get monthly stats
             cursor.execute(
                 """
-                SELECT COUNT(*) AS new_vols FROM UserCredentials 
+                SELECT COUNT(*) AS new_vols FROM usercredentials 
                 WHERE role = 'volunteer' AND created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
                 """
             )
@@ -228,7 +228,7 @@ class AdminVolunteers(Resource):
                 COALESCE(SUM(DISTINCT CASE WHEN vh.participation_status = 'Volunteered' 
                                 THEN ed.event_duration END), 0) AS total_hours
             FROM userprofile up
-            JOIN UserCredentials uc ON up.volunteer_id = uc.user_id
+            JOIN usercredentials uc ON up.volunteer_id = uc.user_id
             LEFT JOIN volunteerhistory vh ON up.volunteer_id = vh.volunteer_id
             LEFT JOIN eventdetails ed ON vh.event_id = ed.event_id
             GROUP BY up.volunteer_id, up.full_name, uc.email
@@ -371,7 +371,7 @@ class AdminVolunteerDetail(Resource):
                 COALESCE(SUM(ed.event_duration), 0) AS total_hours,
                 GROUP_CONCAT(DISTINCT s.skill_name SEPARATOR ', ') AS expertise
             FROM userprofile up
-            JOIN UserCredentials uc ON up.volunteer_id = uc.user_id
+            JOIN usercredentials uc ON up.volunteer_id = uc.user_id
             LEFT JOIN volunteerhistory vh ON up.volunteer_id = vh.volunteer_id
             LEFT JOIN eventdetails ed ON vh.event_id = ed.event_id
             LEFT JOIN volunteer_skills vs ON up.volunteer_id = vs.volunteer_id

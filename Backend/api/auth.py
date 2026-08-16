@@ -35,7 +35,7 @@ class Register(Resource):
         cursor = conn.cursor()
 
         try:
-            cursor.execute("SELECT * FROM UserCredentials WHERE email = %s", (email,))
+            cursor.execute("SELECT * FROM usercredentials WHERE email = %s", (email,))
             if cursor.fetchone():
                 # Check if account has been verified
                 cursor.execute("SELECT verified FROM verification_codes WHERE email = %s", (email,))
@@ -47,7 +47,7 @@ class Register(Resource):
                     return {"message": "User with this email already exists, but is not verified."}, 400
             else:
                 cursor.execute(
-                    "INSERT INTO UserCredentials (email, password_hash, role, created_at) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO usercredentials (email, password_hash, role, created_at) VALUES (%s, %s, %s, %s)",
                     (email, password, role, central_time)
                 )
                 conn.commit()
@@ -72,7 +72,7 @@ class Login(Resource):
 
         try:
             cursor.execute(
-                "SELECT user_id, email, password_hash, role FROM UserCredentials WHERE email = %s",
+                "SELECT user_id, email, password_hash, role FROM usercredentials WHERE email = %s",
                 (email,)
             )
 
@@ -135,7 +135,7 @@ class DeleteAccount(Resource):
 
         try:
             
-            cursor.execute("SELECT user_id FROM UserCredentials WHERE email = %s", (email,))
+            cursor.execute("SELECT user_id FROM usercredentials WHERE email = %s", (email,))
             user = cursor.fetchone()
             if not user:
                 return {"message": "User not found."}, 404
@@ -146,7 +146,7 @@ class DeleteAccount(Resource):
             cursor.execute("DELETE FROM userprofile WHERE volunteer_id = %s", (user_id,))
 
             # Delete user credentials
-            cursor.execute("DELETE FROM UserCredentials WHERE user_id = %s", (user_id,))
+            cursor.execute("DELETE FROM usercredentials WHERE user_id = %s", (user_id,))
 
             
             conn.commit()

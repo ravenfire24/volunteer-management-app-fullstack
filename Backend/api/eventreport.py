@@ -311,19 +311,28 @@ class VolunteerPerformanceAPI(Resource):
                     up.volunteer_id,
                     up.full_name,
                     uc.email,
-                    up.skills,
+                    (
+                        SELECT GROUP_CONCAT(DISTINCT s.skill_name ORDER BY s.skill_name SEPARATOR ',')
+                        FROM volunteer_skills vs
+                        JOIN skills s ON vs.skill_id = s.skills_id
+                        WHERE vs.volunteer_id = up.volunteer_id
+                    ) as skills,
                     COUNT(vh.event_id) as total_events,
                     SUM(CASE WHEN vh.participation_status = 'Volunteered' THEN 1 ELSE 0 END) as events_attended,
                     SUM(CASE WHEN vh.participation_status = 'Did Not Show' THEN 1 ELSE 0 END) as events_missed,
                     AVG(CASE WHEN vh.performance > 0 THEN vh.performance ELSE NULL END) as avg_rating,
                     MAX(e.date) as last_event_date,
-                    GROUP_CONCAT(DISTINCT e.event_name ORDER BY e.date DESC LIMIT 3) as recent_events
+                    SUBSTRING_INDEX(
+                        GROUP_CONCAT(DISTINCT e.event_name ORDER BY e.date DESC SEPARATOR ','),
+                        ',',
+                        3
+                    ) as recent_events
                 FROM userprofile up
                 JOIN usercredentials uc ON up.volunteer_id = uc.user_id
                 JOIN volunteerhistory vh ON up.volunteer_id = vh.volunteer_id
                 JOIN eventdetails e ON vh.event_id = e.event_id
                 WHERE e.event_status = 'Completed'
-                GROUP BY up.volunteer_id, up.full_name, uc.email, up.skills
+                GROUP BY up.volunteer_id, up.full_name, uc.email
                 ORDER BY avg_rating DESC, total_events DESC
             """)
             

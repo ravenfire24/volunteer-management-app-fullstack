@@ -4,7 +4,7 @@
   "outputDirectory": "Frontend/dist",
   "rewrites": [
     {
-      "source": "/api/:path*",
+      "source": "/api/(.*)",
       "destination": "/api/index.py"
     },
     {
