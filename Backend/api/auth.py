@@ -50,6 +50,14 @@ class Register(Resource):
                     "INSERT INTO usercredentials (email, password_hash, role, created_at) VALUES (%s, %s, %s, %s)",
                     (email, password, role, central_time)
                 )
+                cursor.execute(
+                    """
+                    INSERT INTO verification_codes (email, code, verified)
+                    VALUES (%s, %s, %s)
+                    ON DUPLICATE KEY UPDATE verified = VALUES(verified)
+                    """,
+                    (email, 0, 1)
+                )
                 conn.commit()
             return {"message": "Registration successful!"}, 201
         except Exception as e:

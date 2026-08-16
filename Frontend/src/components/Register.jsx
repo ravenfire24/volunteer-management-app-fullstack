@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, UserPlus, Mail } from 'lucide-react';
-import {register, verifyEmail,confirmCode} from '../helpers/authHelpers';
-import VerificationInput from './verification';
+import {register} from '../helpers/authHelpers';
 
 
 export default function Register({ users, setUsers }) {
-  const [showVerification, setShowVerification] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('volunteer');
@@ -26,14 +24,8 @@ export default function Register({ users, setUsers }) {
     // Make API call to register endpoint
     const register_result = await register(UserRegister);
 
-    // Make API call to EmailVerfication endpoint to verify user email
     if(register_result){
-      const verify_result = await verifyEmail(UserRegister);
-
-      // If successful, show the verification input
-      if (verify_result) {
-        setShowVerification(true);
-      }
+      navigate('/login');
     }
 
   };
@@ -222,14 +214,6 @@ export default function Register({ users, setUsers }) {
 
 
       <div className="login-container">
-
-         <div className='VerificaitionInput'>
-          {/* Show VerificationInput only if setShowVerification is true */}
-          {showVerification && (
-            <VerificationInput email={email} showVerification={showVerification} setshowVerification={setShowVerification} />
-          )}
-        </div>
-
         {/* Header */}
         <div className="login-header">
           <h1 className="login-brand">Volunteer Portal</h1>
