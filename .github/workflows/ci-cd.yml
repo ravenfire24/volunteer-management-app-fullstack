@@ -95,6 +95,12 @@ jobs:
             exit 1
           fi
 
+      - name: Link Vercel project
+        run: |
+          rm -rf .vercel
+          mkdir -p .vercel
+          printf '{"orgId":"%s","projectId":"%s"}\n' "$VERCEL_ORG_ID" "$VERCEL_PROJECT_ID" > .vercel/project.json
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
@@ -141,6 +147,12 @@ jobs:
             echo "::error::Missing one or more required secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID"
             exit 1
           fi
+
+      - name: Link Vercel project
+        run: |
+          rm -rf .vercel
+          mkdir -p .vercel
+          printf '{"orgId":"%s","projectId":"%s"}\n' "$VERCEL_ORG_ID" "$VERCEL_PROJECT_ID" > .vercel/project.json
 
       - name: Install Vercel CLI
         run: npm install -g vercel

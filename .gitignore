@@ -44,3 +44,4 @@ __pycache__/
 # Ingore pytest
 .pytest_cache/
 .coverage
+.vercel/
