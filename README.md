@@ -15,14 +15,6 @@ This is the back-end API for the Volunteer Management System, built using **Flas
 
 https://volunteer-management-app-fullstack.vercel.app
 
-## CI/CD
-
-GitHub Actions runs the backend test suite and frontend production build for pull requests and pushes to `main`.
-Vercel is linked to this GitHub repository and handles deployments from Git pushes, so this workflow does not require
-Vercel secrets in GitHub Actions.
-
-
-
 ##  Setup Instructions
 
 ### 1. Install Python and pip (if not already installed)
