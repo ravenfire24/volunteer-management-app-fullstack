@@ -11,6 +11,7 @@ export default function Login({ users, setLoggedInUser }) {
   const [role, setRole] = useState(location.state?.role || 'volunteer');
   const [showVerification, setShowVerification] = useState(Boolean(location.state?.showVerification));
   const [verificationEmail, setVerificationEmail] = useState(location.state?.verificationEmail || '');
+  const [loginError, setLoginError] = useState('');
 
   const navigate = useNavigate();
 
@@ -47,11 +48,19 @@ export default function Login({ users, setLoggedInUser }) {
 
   async function handleLogin(event){
     event.preventDefault(); 
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password.trim()) {
+      setLoginError('Please enter your email address and password.');
+      return;
+    }
+
+    setLoginError('');
     console.log('1. Login attempt started');
 
     // Create data object to send with login API request
     const UserLogin = {
-      "email" : email,
+      "email" : normalizedEmail,
       "password" : password,
       "role" : role
     }
@@ -100,12 +109,11 @@ export default function Login({ users, setLoggedInUser }) {
     } else {
       console.log('13. Login failed');
       if (result?.message?.includes('Account not verified')) {
-        const normalizedEmail = email.toLowerCase();
         setVerificationEmail(normalizedEmail);
         setShowVerification(true);
         await verifyEmail({ ...UserLogin, email: normalizedEmail });
       } else {
-        alert(result?.message || 'Invalid credentials or login failed');
+        setLoginError(result?.message || 'Invalid credentials or login failed');
       }
     }
 }
@@ -252,6 +260,16 @@ export default function Login({ users, setLoggedInUser }) {
           color: #9ca3af;
         }
 
+        .login-error {
+          color: #b91c1c;
+          background-color: #fee2e2;
+          border: 1px solid #fecaca;
+          border-radius: 0.375rem;
+          padding: 0.75rem;
+          font-size: 0.875rem;
+          margin: 0;
+        }
+
         .login-button {
           width: 100%;
           padding: 0.75rem 1rem;
@@ -315,6 +333,8 @@ export default function Login({ users, setLoggedInUser }) {
           )}
 
           <div className="login-form">
+            {loginError && <p className="login-error">{loginError}</p>}
+
             {/* Role Selection */}
             <div className="form-group">
               <label className="form-label">
