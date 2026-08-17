@@ -10,7 +10,7 @@ import {
   getStatesOptions
 } from '../helpers/profilehelpers';
 
-const Select = ({ options, isMulti, placeholder, onChange, value }) => {
+const Select = ({ options, isMulti, placeholder, onChange, value, disabled = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(value || (isMulti ? [] : null));
 
@@ -20,6 +20,8 @@ const Select = ({ options, isMulti, placeholder, onChange, value }) => {
   }, [value, isMulti]);
 
   const handleOptionClick = (option) => {
+    if (disabled) return;
+
     if (isMulti) {
       const newSelected = selected.some(s => s.value === option.value)
         ? selected.filter(s => s.value !== option.value)
@@ -35,7 +37,10 @@ const Select = ({ options, isMulti, placeholder, onChange, value }) => {
 
   return (
     <div className="select-container">
-      <div className="select-display" onClick={() => setIsOpen(!isOpen)}>
+      <div
+        className={`select-display ${disabled ? 'disabled' : ''}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
         {isMulti ? (
           selected.length > 0 ? selected.map(s => s.label).join(', ') : placeholder
         ) : (
@@ -311,19 +316,6 @@ export default function ProfileForm() {
       navigate('/volunteerdash');
     }
   }
-
-  // ✅ Show loading state while options are loading
-  if (optionsLoading) {
-    return (
-      <div className="profile-container">
-        <div className="profile-header">
-          <h1 className="profile-brand">Volunteer Portal</h1>
-          <p className="profile-subtitle">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <style>{`
@@ -480,6 +472,14 @@ export default function ProfileForm() {
           outline: none;
           border-color: #3b82f6;
           box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-select:disabled,
+        .select-display.disabled {
+          background-color: #f3f4f6;
+          color: #6b7280;
+          cursor: not-allowed;
+          opacity: 0.75;
         }
 
         .form-textarea {
@@ -797,8 +797,9 @@ export default function ProfileForm() {
                 className="form-select"
                 value={form.state}
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
+                disabled={optionsLoading}
               >
-                <option value="">Select State</option>
+                <option value="">{optionsLoading ? 'Loading states...' : 'Select State'}</option>
                 {stateOptions.map((state) => (
                   <option key={state.value} value={state.value}>
                     {state.label}
@@ -833,9 +834,10 @@ export default function ProfileForm() {
               <Select
                 options={skillsOptions}
                 isMulti
-                placeholder="Select your skills"
+                placeholder={optionsLoading ? 'Loading skills...' : 'Select your skills'}
                 value={form.skills}
                 onChange={(selected) => setForm({ ...form, skills: selected })}
+                disabled={optionsLoading}
               />
             </div>
 
@@ -895,9 +897,11 @@ export default function ProfileForm() {
                 type="button"
                 onClick={handleSubmit}
                 style={{ color:'white',backgroundColor: '#10b981' }}
-                disabled={isLoading}
+                disabled={isLoading || optionsLoading}
               >
-                {isLoading
+                {optionsLoading
+                  ? 'Loading options...'
+                  : isLoading
                   ? (isEditMode ? 'Updating...' : 'Saving...')
                   : (isEditMode ? 'Update Profile' : 'Save Profile')
                 }
