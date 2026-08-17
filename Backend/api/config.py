@@ -9,6 +9,7 @@ load_dotenv(dotenv_path)
 
 
 class Config:
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'dev-secret-key-for-volunteer-management')
     MYSQL_HOST = os.getenv('MYSQL_HOST', 'mysql-vma-ttorta005.g.aivencloud.com')
     MYSQL_PORT = int(os.getenv('MYSQL_PORT', '21957'))
     MYSQL_USER = os.getenv('MYSQL_USER', 'avnadmin')
@@ -18,6 +19,10 @@ class Config:
     MYSQL_SSL_CA_CONTENT = os.getenv('MYSQL_SSL_CA_CONTENT')
 
 class TestConfig(Config):
+    TESTING = True
+    PROPAGATE_EXCEPTIONS = False
+    USE_SQLITE_TEST_DB = True
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'test-secret-key-for-volunteer-suite')
     ALLOW_MISSING_EMAIL_PASSWORD = True
     MYSQL_HOST = os.getenv('TEST_MYSQL_HOST', Config.MYSQL_HOST)
     MYSQL_PORT = int(os.getenv('TEST_MYSQL_PORT', str(Config.MYSQL_PORT)))
