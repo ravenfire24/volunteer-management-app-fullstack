@@ -15,6 +15,18 @@ This is the back-end API for the Volunteer Management System, built using **Flas
 
 https://volunteer-management-app-fullstack.vercel.app
 
+## CI/CD
+
+GitHub Actions runs the backend test suite and frontend production build for pull requests and pushes to `main`.
+After both checks pass, pushes to `main` deploy to Vercel production. Pull requests from this repository also create
+Vercel preview deployments.
+
+Add these repository secrets in GitHub before relying on automated deployments:
+
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+
 
 
 ##  Setup Instructions
