@@ -83,6 +83,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_SCOPE: project-blae
 
     steps:
       - name: Check out repository
@@ -105,15 +106,15 @@ jobs:
         run: npm install -g vercel
 
       - name: Pull Vercel preview environment
-        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+        run: vercel pull --yes --environment=preview --scope="$VERCEL_SCOPE" --token="$VERCEL_TOKEN"
 
       - name: Build preview deployment
-        run: vercel build --token="$VERCEL_TOKEN"
+        run: vercel build --scope="$VERCEL_SCOPE" --token="$VERCEL_TOKEN"
 
       - name: Deploy preview
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --token="$VERCEL_TOKEN")
+          url=$(vercel deploy --prebuilt --scope="$VERCEL_SCOPE" --token="$VERCEL_TOKEN")
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Publish preview URL
@@ -136,6 +137,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_SCOPE: project-blae
 
     steps:
       - name: Check out repository
@@ -158,15 +160,15 @@ jobs:
         run: npm install -g vercel
 
       - name: Pull Vercel production environment
-        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+        run: vercel pull --yes --environment=production --scope="$VERCEL_SCOPE" --token="$VERCEL_TOKEN"
 
       - name: Build production deployment
-        run: vercel build --prod --token="$VERCEL_TOKEN"
+        run: vercel build --prod --scope="$VERCEL_SCOPE" --token="$VERCEL_TOKEN"
 
       - name: Deploy production
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          url=$(vercel deploy --prebuilt --prod --scope="$VERCEL_SCOPE" --token="$VERCEL_TOKEN")
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Publish production URL
