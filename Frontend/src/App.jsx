@@ -1,20 +1,19 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import Login from './components/Login';
-import Register from './components/Register';
-import ProfileForm from './components/ProfileForm';
-import VolunteerDash from './components/VolunteerDash';
-import AdminDash from './components/AdminDash';
-import VolunteerMatch from './components/VolunteerMatch'; 
-import VolunteerHistoryTable from './components/VolunteerHistory';
-import EventForm from './components/EventForm'; 
-import EventManagement from './components/EventManagement';
-import ViewAllEvents from './components/ViewAllEvents';
-import EventReview from './components/EventReview'
-import EvetnReport from './components/EventReport';
+import { Suspense, lazy, useState } from 'react';
 
-
-import AllVolunteers from './components/AllVolunteers'
+const Login = lazy(() => import('./components/Login'));
+const Register = lazy(() => import('./components/Register'));
+const ProfileForm = lazy(() => import('./components/ProfileForm'));
+const VolunteerDash = lazy(() => import('./components/VolunteerDash'));
+const AdminDash = lazy(() => import('./components/AdminDash'));
+const VolunteerMatch = lazy(() => import('./components/VolunteerMatch'));
+const VolunteerHistoryTable = lazy(() => import('./components/VolunteerHistory'));
+const EventForm = lazy(() => import('./components/EventForm'));
+const EventManagement = lazy(() => import('./components/EventManagement'));
+const ViewAllEvents = lazy(() => import('./components/ViewAllEvents'));
+const EventReview = lazy(() => import('./components/EventReview'));
+const EventReport = lazy(() => import('./components/EventReport'));
+const AllVolunteers = lazy(() => import('./components/AllVolunteers'));
 
 function App() {
   const [users, setUsers] = useState([]); // Store registered users
@@ -22,24 +21,25 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/register" element={<Register users={users} setUsers={setUsers} />} />
-        <Route path="/login" element={<Login users={users} setLoggedInUser={setLoggedInUser} />} />
-        <Route path="/profile" element= {<ProfileForm user={loggedInUser}/>}/>
-        <Route path="/volunteerdash" element={<VolunteerDash />} />
-        <Route path="/volunteermatch" element={<VolunteerMatch />} />
-        <Route path="/admindash" element={<AdminDash />} /> 
-        <Route path="/volunteerhistory" element={<VolunteerHistoryTable/>} />
-         <Route path="/events/create" element={<EventForm />} />
-        <Route path="/eventmanagement" element={<EventManagement />} />
-        <Route path="/viewallevents" element={<ViewAllEvents />}/>
-        <Route path="/events/edit/:eventId" element={<EventForm />} />
-        <Route path="/eventreview" element={<EventReview />}/>
-        <Route path="/eventreport" element={<EvetnReport />} />
-         <Route path="/volunteers" element={<AllVolunteers />}/>
-
-      </Routes>
+      <Suspense fallback={<div className="route-loading">Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/register" element={<Register users={users} setUsers={setUsers} />} />
+          <Route path="/login" element={<Login users={users} setLoggedInUser={setLoggedInUser} />} />
+          <Route path="/profile" element={<ProfileForm user={loggedInUser} />} />
+          <Route path="/volunteerdash" element={<VolunteerDash />} />
+          <Route path="/volunteermatch" element={<VolunteerMatch />} />
+          <Route path="/admindash" element={<AdminDash />} />
+          <Route path="/volunteerhistory" element={<VolunteerHistoryTable />} />
+          <Route path="/events/create" element={<EventForm />} />
+          <Route path="/eventmanagement" element={<EventManagement />} />
+          <Route path="/viewallevents" element={<ViewAllEvents />} />
+          <Route path="/events/edit/:eventId" element={<EventForm />} />
+          <Route path="/eventreview" element={<EventReview />} />
+          <Route path="/eventreport" element={<EventReport />} />
+          <Route path="/volunteers" element={<AllVolunteers />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
