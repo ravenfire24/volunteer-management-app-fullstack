@@ -30,7 +30,7 @@ class MatchVolunteer(Resource):
                     volunteers_needed,
                     event_status
                 FROM eventdetails
-                WHERE event_status = 'Pending'
+                WHERE LOWER(event_status) = 'pending'
                 ORDER BY date ASC
             """
             cursor.execute(events_query)
@@ -139,7 +139,7 @@ class MatchVolunteer(Resource):
                 return {"message": "Event not found"}, 404
 
             # Check if event is still pending
-            if event_row['event_status'] != 'Pending':
+            if (event_row['event_status'] or '').lower() != 'pending':
                 return {"message": "Event is not available for assignment (not pending status)"}, 400
 
             # Check if event still needs volunteers
@@ -278,7 +278,7 @@ class FilteredVolunteers(Resource):
             cursor.execute("""
                 SELECT date, state, volunteers_needed
                 FROM eventdetails 
-                WHERE event_id = %s AND event_status = 'Pending'
+                WHERE event_id = %s AND LOWER(event_status) = 'pending'
             """, (event_id,))
             
             event_row = cursor.fetchone()
@@ -478,7 +478,7 @@ class FinalizeEvent(Resource):
             cursor.execute("""
                 UPDATE eventdetails 
                 SET event_status = 'Finalized'
-                WHERE event_id = %s AND event_status = 'Pending'
+                WHERE event_id = %s AND LOWER(event_status) = 'pending'
             """, (event_id,))
             
             rows_affected = cursor.rowcount

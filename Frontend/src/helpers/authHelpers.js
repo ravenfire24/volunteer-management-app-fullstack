@@ -16,7 +16,6 @@ export async function login(data){
       const parsed = await response.json();
 
     if(parsed.message == "Login successful"){
-      alert(parsed.message);
       // Set user data in local storage
       sessionStorage.setItem("access_token", parsed.tokens.access_token);
       sessionStorage.setItem("refresh_token", parsed.tokens.refresh_token);

@@ -7,8 +7,8 @@ import { checkTokenTime } from "../helpers/authHelpers";
 
 // Notification helper
 async function sendNotification(volunteer, event_id) {
-  const token = sessionStorage.getItem("access_token");
   await checkTokenTime();
+  const token = sessionStorage.getItem("access_token");
 
   // Grab event via id
   const response = await fetch(`http://localhost:5000/api/eventlist/${event_id}`, {
@@ -69,7 +69,7 @@ export default function EventManagementPage() {
     },
     {
       className: "nav-button",
-      link: "/EventReview",
+      link: "/eventreview",
       logo: <ClipboardCheck size={16} />,
       text: "Event Review"
     },
@@ -171,10 +171,10 @@ export default function EventManagementPage() {
     if (!confirmed) return;
 
     try {
-      const token = sessionStorage.getItem("access_token");
       await checkTokenTime();
+      const token = sessionStorage.getItem("access_token");
 
-      let response  = await fetch(`http://localhost:5000/api/eventreview/${eventId}/volunteers`, {
+      let response  = await fetch(`/api/eventreview/${eventId}/volunteers`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,

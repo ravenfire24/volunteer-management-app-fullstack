@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavigationBar from './Navigation';
-import { BarChart3, Calendar, MapPin, Settings, Users, UserCheck, ClipboardCheck } from 'lucide-react';
+import { Calendar, MapPin, Settings, Users, UserCheck, ClipboardCheck } from 'lucide-react';
 import { 
   getAdminDashboard,
   getTopVolunteers
@@ -9,7 +9,6 @@ import {
 
 export default function AdminDashboard() {
   const [adminName, setAdminName] = useState('Admin Manager');
-  const [notifications, setNotifications] = useState(0);
   const [sortBy, setSortBy] = useState('events'); // 'events' or 'rating'
   const [topVolunteers, setTopVolunteers] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -40,7 +39,6 @@ export default function AdminDashboard() {
         
         // Update state with backend data
         setAdminName(dashboardData.admin_info.name);
-        setNotifications(dashboardData.admin_info.notifications);
         setTopVolunteers(dashboardData.top_volunteers);
         setUpcomingEvents(dashboardData.upcoming_events);
         setStatistics(dashboardData.statistics);
@@ -127,7 +125,7 @@ const extraLinks = [
   },
   {
     className: "nav-button",
-    link: "/EventReview",
+    link: "/eventreview",
     logo: <ClipboardCheck size={16} />,
     text: "Event Review"
   },
@@ -176,41 +174,6 @@ const extraLinks = [
         .welcome-subtitle {
           color: #6b7280;
           margin: 0;
-        }
-
-        .welcome-meta {
-          display: flex;
-          gap: 1rem;
-          flex-wrap: wrap;
-          margin-top: 0.75rem;
-          color: #6b7280;
-          font-size: 0.875rem;
-        }
-
-        .quick-actions {
-          display: flex;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-          margin-top: 1rem;
-        }
-
-        .quick-action-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.625rem 1rem;
-          border: 1px solid #d1d5db;
-          border-radius: 0.375rem;
-          background: white;
-          color: #374151;
-          cursor: pointer;
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
-
-        .quick-action-button:hover {
-          background: #f3f4f6;
-          color: #111827;
         }
 
         .error-message {
@@ -434,20 +397,6 @@ const extraLinks = [
             color: #d1d5db !important;
           }
 
-          .welcome-meta {
-            color: #d1d5db !important;
-          }
-
-          .quick-action-button {
-            background-color: #1f2937 !important;
-            border-color: #374151 !important;
-            color: #f9fafb !important;
-          }
-
-          .quick-action-button:hover {
-            background-color: #374151 !important;
-          }
-
           .card, .stat-card {
             background-color: #1f2937 !important;
             border: 1px solid #374151 !important;
@@ -511,30 +460,6 @@ const extraLinks = [
           {/* Welcome Message */}
           <div className="welcome-section">
             <h2 className="welcome-title">Welcome, {adminName}!</h2>
-            <p className="welcome-subtitle">Manage your volunteer community and events</p>
-            <div className="welcome-meta">
-              <span>{notifications} notifications</span>
-              <span>{statistics.monthlyNewVolunteers || 0} new volunteers this month</span>
-              <span>{statistics.monthlyEventParticipation || 0} volunteer check-ins this month</span>
-            </div>
-            <div className="quick-actions">
-              <button className="quick-action-button" onClick={() => navigate('/events/create')}>
-                <Calendar size={16} />
-                Create Event
-              </button>
-              <button className="quick-action-button" onClick={() => navigate('/volunteermatch')}>
-                <UserCheck size={16} />
-                Match Volunteers
-              </button>
-              <button className="quick-action-button" onClick={() => navigate('/eventreview')}>
-                <ClipboardCheck size={16} />
-                Review Events
-              </button>
-              <button className="quick-action-button" onClick={() => navigate('/eventreport')}>
-                <BarChart3 size={16} />
-                Reports
-              </button>
-            </div>
             {error && (
               <div className="error-message">
                 {error} - Using fallback data

@@ -30,7 +30,7 @@ export default function ReportsPage() {
     },
     {
       className: "nav-button",
-      link: "/EventReview",
+      link: "/eventreview",
       logo: <ClipboardCheck size={16} />,
       text: "Event Review"
     },

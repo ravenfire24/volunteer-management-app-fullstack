@@ -28,7 +28,7 @@ export default function AllVolunteers() {
     },
     {
       className: "nav-button",
-      link: "/EventReview",
+      link: "/eventreview",
       logo: <ClipboardCheck size={16} />,
       text: "Event Review"
     },
@@ -43,8 +43,8 @@ export default function AllVolunteers() {
       setLoading(true);
       setError(null);
 
-      const token = sessionStorage.getItem('access_token');
       await checkTokenTime();
+      const token = sessionStorage.getItem('access_token');
 
       const response = await fetch('http://127.0.0.1:5000/api/admin/volunteers/', {
         method: "GET",
@@ -101,21 +101,36 @@ export default function AllVolunteers() {
 
 
 
+  const getVolunteerRating = (volunteer) => (
+    volunteer.rating ?? volunteer.average_rating ?? volunteer.avg_rating ?? volunteer.performance
+  );
+
+  const normalizeRating = (rating) => {
+    const numRating = Number(rating);
+    return Number.isFinite(numRating) && numRating > 0
+      ? Math.min(5, Math.max(0, numRating))
+      : 0;
+  };
+
   const renderStars = (rating) => {
-    const numRating = parseFloat(rating) || 0;
+    const numRating = normalizeRating(rating);
+    const displayRating = numRating > 0 ? numRating.toFixed(1) : 'Not rated';
+
     return (
-      <div className="star-rating">
+      <div className="star-rating" aria-label={`Rating: ${displayRating}`}>
         {[1, 2, 3, 4, 5].map(star => (
           <Star
             key={star}
             size={16}
-            className={`star ${star <= numRating ? 'filled' : ''}`}
-            fill={star <= numRating ? '#fbbf24' : 'none'}
-            stroke={star <= numRating ? '#fbbf24' : '#d1d5db'}
+            className={`star ${star <= Math.round(numRating) ? 'filled' : ''}`}
+            fill={star <= Math.round(numRating) ? '#fbbf24' : 'none'}
+            stroke={star <= Math.round(numRating) ? '#fbbf24' : '#d1d5db'}
             strokeWidth={2}
           />
         ))}
-        <span className="rating-text">({numRating})</span>
+        <span className={`rating-text ${numRating > 0 ? '' : 'not-rated'}`}>
+          {numRating > 0 ? `(${displayRating})` : displayRating}
+        </span>
       </div>
     );
   };
@@ -281,6 +296,10 @@ export default function AllVolunteers() {
           font-size: 0.75rem;
           color: #6b7280;
           margin-left: 0.25rem;
+        }
+
+        .rating-text.not-rated {
+          color: #9ca3af;
         }
 
         .expertise-cell {
@@ -551,7 +570,7 @@ export default function AllVolunteers() {
                           </div>
                         </td>
                         <td className="table-cell">
-                          {renderStars(volunteer.rating)}
+                          {renderStars(getVolunteerRating(volunteer))}
                         </td>
                         <td className="table-cell">
                           <div className="hours-count">

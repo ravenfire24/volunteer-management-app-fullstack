@@ -227,32 +227,6 @@ export default function VolunteerDashboard() {
           margin: 0;
         }
 
-        .quick-actions {
-          display: flex;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-          margin-top: 1rem;
-        }
-
-        .quick-action-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.625rem 1rem;
-          border: 1px solid #d1d5db;
-          border-radius: 0.375rem;
-          background: white;
-          color: #374151;
-          cursor: pointer;
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
-
-        .quick-action-button:hover {
-          background: #f3f4f6;
-          color: #111827;
-        }
-
         .error-message {
           background-color: #fee2e2;
           border: 1px solid #fecaca;
@@ -450,16 +424,6 @@ export default function VolunteerDashboard() {
             color: #d1d5db !important;
           }
 
-          .quick-action-button {
-            background-color: #1f2937 !important;
-            border-color: #374151 !important;
-            color: #f9fafb !important;
-          }
-
-          .quick-action-button:hover {
-            background-color: #374151 !important;
-          }
-
           .card, .stat-card {
             background-color: #1f2937 !important;
             border: 1px solid #374151 !important;
@@ -522,20 +486,6 @@ export default function VolunteerDashboard() {
           <div className="welcome-section">
             <h2 className="welcome-title">Welcome, {volunteerName}!</h2>
             <p className="welcome-subtitle">Ready to make a difference today?</p>
-            <div className="quick-actions">
-              <button className="quick-action-button" onClick={() => navigate('/profile')}>
-                <User size={16} />
-                Update Profile
-              </button>
-              <button className="quick-action-button" onClick={handleViewAllEvents}>
-                <Calendar size={16} />
-                Find Events
-              </button>
-              <button className="quick-action-button" onClick={handleVolunteerMatching}>
-                <History size={16} />
-                View History
-              </button>
-            </div>
             {error && (
               <div className="error-message">
                 {error} - Using fallback data

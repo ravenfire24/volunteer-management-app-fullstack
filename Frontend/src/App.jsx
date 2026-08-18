@@ -36,6 +36,7 @@ function App() {
           <Route path="/viewallevents" element={<ViewAllEvents />} />
           <Route path="/events/edit/:eventId" element={<EventForm />} />
           <Route path="/eventreview" element={<EventReview />} />
+          <Route path="/EventReview" element={<EventReview />} />
           <Route path="/eventreport" element={<EventReport />} />
           <Route path="/volunteers" element={<AllVolunteers />} />
         </Routes>

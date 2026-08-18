@@ -50,7 +50,7 @@ const extraLinks = [
   },
   {
     className: "nav-button",
-    link: "/EventReview",
+    link: "/eventreview",
     logo: <ClipboardCheck size={16} />,
     text: "Event Review"
   },
@@ -65,10 +65,10 @@ const extraLinks = [
       setLoading(true);
       setError(null);
 
-      const token = sessionStorage.getItem("access_token");
       await checkTokenTime();
+      const token = sessionStorage.getItem("access_token");
 
-      const response = await fetch("http://localhost:5000/api/eventreview/finalized", {
+      const response = await fetch("/api/eventreview/finalized", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -93,9 +93,10 @@ const extraLinks = [
 
   const loadVolunteers = async (eventId) => {
     try {
+      await checkTokenTime();
       const token = sessionStorage.getItem("access_token");
 
-      const response = await fetch(`http://localhost:5000/api/eventreview/${eventId}/volunteers`, {
+      const response = await fetch(`/api/eventreview/${eventId}/volunteers`, {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -149,9 +150,10 @@ const extraLinks = [
     }
 
     try {
+      await checkTokenTime();
       const token = sessionStorage.getItem("access_token");
 
-      const response = await fetch(`http://localhost:5000/api/eventreview/${selectedEvent.id}/volunteer/${reviewingVolunteer.volunteerId}`, {
+      const response = await fetch(`/api/eventreview/${selectedEvent.id}/volunteer/${reviewingVolunteer.volunteerId}`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -166,7 +168,9 @@ const extraLinks = [
       }
 
       alert("Review submitted successfully!");
-      sendNotification(reviewingVolunteer,selectedEvent);
+      void sendNotification(reviewingVolunteer,selectedEvent).catch((error) => {
+        console.error("Failed to send review notification:", error);
+      });
       setReviewingVolunteer(null);
       loadVolunteers(selectedEvent.id); // Refresh volunteers list
 
@@ -188,9 +192,10 @@ const extraLinks = [
     if (!confirmed) return;
 
     try {
+      await checkTokenTime();
       const token = sessionStorage.getItem("access_token");
 
-      const response = await fetch(`http://localhost:5000/api/eventreview/${selectedEvent.id}/complete`, {
+      const response = await fetch(`/api/eventreview/${selectedEvent.id}/complete`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -927,7 +932,7 @@ const renderStars = (rating, interactive = false, onChange = null) => {
                         <div className="volunteer-header">
                           <h4 className="volunteer-name">{volunteer.fullName}</h4>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <span className={`status-badge status-${volunteer.participationStatus.toLowerCase().replace(' ', '-')}`}>
+                            <span className={`status-badge status-${volunteer.participationStatus.toLowerCase().replace(/\s+/g, '-')}`}>
                               {volunteer.participationStatus}
                             </span>
                             {volunteer.needsReview && (

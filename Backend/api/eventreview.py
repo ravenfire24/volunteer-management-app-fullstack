@@ -46,7 +46,7 @@ class EventReview(Resource):
                     SUM(CASE WHEN vh.participation_status = 'Registered' THEN 1 ELSE 0 END) as pending_reviews
                 FROM eventdetails e
                 LEFT JOIN volunteerhistory vh ON e.event_id = vh.event_id
-                WHERE e.event_status = 'Finalized'
+                WHERE LOWER(e.event_status) = 'finalized'
                 GROUP BY e.event_id, e.event_name, e.date, e.location_name, e.event_description, e.event_status
                 ORDER BY e.date DESC
             """)
@@ -100,7 +100,7 @@ class EventReviewVolunteers(Resource):
             cursor.execute("""
                 SELECT event_name, event_status 
                 FROM eventdetails 
-                WHERE event_id = %s AND event_status = 'Finalized'
+                WHERE event_id = %s AND LOWER(event_status) = 'finalized'
             """, (event_id,))
             
             event = cursor.fetchone()
@@ -245,7 +245,7 @@ class CompleteEvent(Resource):
             cursor.execute("""
                 SELECT event_status 
                 FROM eventdetails 
-                WHERE event_id = %s AND event_status = 'Finalized'
+                WHERE event_id = %s AND LOWER(event_status) = 'finalized'
             """, (event_id,))
             
             event = cursor.fetchone()
