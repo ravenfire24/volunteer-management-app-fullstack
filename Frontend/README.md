@@ -22,7 +22,7 @@ Download and install the latest **LTS** version of Node.js from the [official No
      
      npm run dev
 
-# This will start the server on the http://localhost:5173/
+
 
 ![alt text](https://github.com/ravenfire24/volunteer-management-app-fullstack/blob/main/Frontend/login%20page.JPG)
 
