@@ -3,6 +3,7 @@ import NotificationButton from './Notification';
 import './Navigation.css';
 import { Calendar, MapPin, Users, Home, LogOut, UserCheck, User, History } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { confirmAction } from '../helpers/dialogs';
 
 /* Instructions for setting up:
 
@@ -67,7 +68,7 @@ export default function NavigationBar({ extraLinks, title }) {
     const handleDeleteAccount = async () => {
         const accessToken = sessionStorage.getItem("access_token");
 
-        if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
+        if (!(await confirmAction("Are you sure you want to delete your account? This cannot be undone.", { confirmText: 'Delete Account', danger: true }))) return;
 
         try {
             const response = await fetch("http://localhost:5000/api/auth/delete/", {

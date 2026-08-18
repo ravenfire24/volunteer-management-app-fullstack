@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, MapPin, Users, AlertCircle, FileText, Clock, Home } from 'lucide-react';
+import { confirmAction } from '../helpers/dialogs';
 
 const Select = ({ options, isMulti, placeholder, onChange, value }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -207,8 +208,8 @@ useEffect(() => {
     }
   };
 
-  const handleCancel = () => {
-    if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+  const handleCancel = async () => {
+    if (await confirmAction('Are you sure you want to cancel? All unsaved changes will be lost.', { confirmText: 'Leave' })) {
       navigate('/eventmanagement');
     }
   };

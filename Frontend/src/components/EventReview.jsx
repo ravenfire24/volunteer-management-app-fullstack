@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NavigationBar from './Navigation';
 import { createNotification } from '../helpers/notificationHelpers';
 import { checkTokenTime } from "../helpers/authHelpers";
+import { confirmAction } from "../helpers/dialogs";
 
 // Notification helper
 async function sendNotification(reviewingVolunteer,selectedEvent) {
@@ -188,7 +189,7 @@ const extraLinks = [
       return;
     }
 
-    const confirmed = window.confirm('Are you sure you want to mark this event as completed? This action cannot be undone.');
+    const confirmed = await confirmAction('Are you sure you want to mark this event as completed? This action cannot be undone.', { confirmText: 'Complete Event' });
     if (!confirmed) return;
 
     try {

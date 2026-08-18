@@ -4,6 +4,7 @@ import NavigationBar from './Navigation';
 import { History, Settings, Calendar, MapPin, Users, AlertCircle, FileText, Clock, User, Award, Phone, Mail, UserCheck, ClipboardCheck } from 'lucide-react';
 import { createNotification } from '../helpers/notificationHelpers';
 import { checkTokenTime } from "../helpers/authHelpers";
+import { confirmAction } from "../helpers/dialogs";
 
 // Notification helper
 async function sendNotification(data) {
@@ -171,7 +172,7 @@ const extraLinks = [
       return;
     }
 
-    if (!confirm(`Are you sure you want to finalize "${selectedEvent.event_name}"? This action cannot be undone.`)) {
+    if (!(await confirmAction(`Are you sure you want to finalize "${selectedEvent.event_name}"? This action cannot be undone.`, { confirmText: 'Finalize' }))) {
       return;
     }
 

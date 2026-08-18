@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NavigationBar from './Navigation';
 import { createNotification } from '../helpers/notificationHelpers';
 import { checkTokenTime } from "../helpers/authHelpers";
+import { confirmAction } from "../helpers/dialogs";
 
 // Notification helper
 async function sendNotification(volunteer, event_id) {
@@ -167,7 +168,7 @@ export default function EventManagementPage() {
 };
 
   const handleRemoveEvent = async (eventId) => {
-    const confirmed = window.confirm('Are you sure you want to remove this event?');
+    const confirmed = await confirmAction('Are you sure you want to remove this event?', { confirmText: 'Remove Event', danger: true });
     if (!confirmed) return;
 
     try {

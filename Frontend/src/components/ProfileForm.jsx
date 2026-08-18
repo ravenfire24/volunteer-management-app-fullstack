@@ -9,6 +9,7 @@ import {
   getSkillsOptions,
   getStatesOptions
 } from '../helpers/profilehelpers';
+import { confirmAction } from '../helpers/dialogs';
 
 const Select = ({ options, isMulti, placeholder, onChange, value, disabled = false }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -312,7 +313,7 @@ export default function ProfileForm() {
   };
 
   const handlecancel = async (e) => {
-    if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+    if (await confirmAction('Are you sure you want to cancel? All unsaved changes will be lost.', { confirmText: 'Leave' })) {
       navigate('/volunteerdash');
     }
   }
