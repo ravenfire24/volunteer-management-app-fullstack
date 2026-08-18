@@ -58,7 +58,9 @@ class VolunteerDashboard(Resource):
                 SELECT 
                     COUNT(CASE WHEN vh.participation_status = 'Volunteered' THEN 1 END) AS events_completed,
                     COALESCE(SUM(CASE WHEN vh.participation_status = 'Volunteered' 
-                                    THEN ed.event_duration END), 0) AS total_hours
+                                    THEN ed.event_duration END), 0) AS total_hours,
+                    ROUND(AVG(CASE WHEN vh.participation_status = 'Volunteered' AND vh.performance IS NOT NULL
+                                   THEN vh.performance END), 1) AS average_rating
                 FROM volunteerhistory vh
                 LEFT JOIN eventdetails ed ON vh.event_id = ed.event_id
                 WHERE vh.volunteer_id = %s
@@ -67,6 +69,8 @@ class VolunteerDashboard(Resource):
             stats = cursor.fetchone()
             events_completed = stats['events_completed'] or 0
             total_hours = stats['total_hours'] or 0
+            average_rating_result = stats.get('average_rating') if stats else None
+            average_rating = float(average_rating_result) if average_rating_result else 0.0
             
             # Get upcoming events count (registered events)
             cursor.execute("""
@@ -159,14 +163,16 @@ class VolunteerDashboard(Resource):
                     "email": user_email,
                     "total_hours": total_hours,
                     "events_completed": events_completed,
-                    "upcoming_events": upcoming_count
+                    "upcoming_events": upcoming_count,
+                    "average_rating": average_rating
                 },
                 "recent_history": recent_history,
                 "upcoming_events": upcoming_events,
                 "statistics": {
                     "total_hours": total_hours,
                     "events_completed": events_completed,
-                    "upcoming_events": upcoming_count
+                    "upcoming_events": upcoming_count,
+                    "average_rating": average_rating
                 }
             }
             

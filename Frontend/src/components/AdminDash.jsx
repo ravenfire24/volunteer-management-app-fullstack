@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavigationBar from './Navigation';
-import { Bell, User, LogOut, Calendar, Clock, MapPin, Users, Settings, UserCheck, History, ChevronDown, ClipboardCheck } from 'lucide-react';
+import { BarChart3, Calendar, MapPin, Settings, Users, UserCheck, ClipboardCheck } from 'lucide-react';
 import { 
   getAdminDashboard,
-  getTopVolunteers,
-  getUpcomingEvents,
-  getAdminStatistics 
+  getTopVolunteers
 } from '../helpers/adminhelpers';
 
 export default function AdminDashboard() {
@@ -18,13 +16,17 @@ export default function AdminDashboard() {
   const [statistics, setStatistics] = useState({
     totalVolunteers: 0,
     upcomingEvents: 0,
-    eventsToFinalize: 0
+    eventsToFinalize: 0,
+    completedEvents: 0,
+    totalVolunteerHours: 0,
+    averageRating: 0,
+    monthlyNewVolunteers: 0,
+    monthlyEventParticipation: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const navigate = useNavigate();
-  const [eventDropdownOpen, setEventDropdownOpen] = useState(false);
 
   // Load admin dashboard data
   useEffect(() => {
@@ -39,10 +41,16 @@ export default function AdminDashboard() {
         // Update state with backend data
         setAdminName(dashboardData.admin_info.name);
         setNotifications(dashboardData.admin_info.notifications);
-        //setTopVolunteers(dashboardData.top_volunteers);
+        setTopVolunteers(dashboardData.top_volunteers);
         setUpcomingEvents(dashboardData.upcoming_events);
         setStatistics(dashboardData.statistics);
-        handleSortChange("events");
+
+        try {
+          const volunteers = await getTopVolunteers('events', 5);
+          setTopVolunteers(volunteers);
+        } catch (sortError) {
+          console.error('Error loading sorted volunteers:', sortError);
+        }
         
       } catch (error) {
         console.error('Error loading dashboard data:', error);
@@ -94,6 +102,13 @@ export default function AdminDashboard() {
 
   const handleEventManagement = () => {
     navigate('/eventmanagement');
+  };
+
+  const getVolunteerEvents = (volunteer) => volunteer.events ?? volunteer.events_attended ?? 0;
+  const getVolunteerHours = (volunteer) => volunteer.totalHours ?? volunteer.total_hours ?? 0;
+  const getRatingText = (rating) => {
+    const numericRating = Number(rating);
+    return Number.isFinite(numericRating) && numericRating > 0 ? numericRating.toFixed(1) : 'Not rated';
   };
 
   // Array containing props to be sent to navigationbar component
@@ -161,6 +176,41 @@ const extraLinks = [
         .welcome-subtitle {
           color: #6b7280;
           margin: 0;
+        }
+
+        .welcome-meta {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+          margin-top: 0.75rem;
+          color: #6b7280;
+          font-size: 0.875rem;
+        }
+
+        .quick-actions {
+          display: flex;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+          margin-top: 1rem;
+        }
+
+        .quick-action-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.625rem 1rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.375rem;
+          background: white;
+          color: #374151;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .quick-action-button:hover {
+          background: #f3f4f6;
+          color: #111827;
         }
 
         .error-message {
@@ -275,6 +325,25 @@ const extraLinks = [
           gap: 0.25rem;
         }
 
+        .title-with-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        .status-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.15rem 0.5rem;
+          border-radius: 9999px;
+          background-color: #e0f2fe;
+          color: #0369a1;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+
         .expertise-text {
           font-weight: 500;
         }
@@ -334,6 +403,18 @@ const extraLinks = [
           color: #8b5cf6;
         }
 
+        .stat-number.amber {
+          color: #f59e0b;
+        }
+
+        .stat-number.slate {
+          color: #475569;
+        }
+
+        .stat-number.rose {
+          color: #e11d48;
+        }
+
         .stat-label {
           color: #6b7280;
         }
@@ -351,6 +432,20 @@ const extraLinks = [
 
           .welcome-subtitle {
             color: #d1d5db !important;
+          }
+
+          .welcome-meta {
+            color: #d1d5db !important;
+          }
+
+          .quick-action-button {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+            color: #f9fafb !important;
+          }
+
+          .quick-action-button:hover {
+            background-color: #374151 !important;
           }
 
           .card, .stat-card {
@@ -374,6 +469,11 @@ const extraLinks = [
 
           .stat-label {
             color: #d1d5db !important;
+          }
+
+          .status-badge {
+            background-color: #164e63 !important;
+            color: #e0f2fe !important;
           }
 
           .error-message {
@@ -410,8 +510,31 @@ const extraLinks = [
         <div className="main-content">
           {/* Welcome Message */}
           <div className="welcome-section">
-            <h2 className="welcome-title">Welcome, Administrator!</h2>
+            <h2 className="welcome-title">Welcome, {adminName}!</h2>
             <p className="welcome-subtitle">Manage your volunteer community and events</p>
+            <div className="welcome-meta">
+              <span>{notifications} notifications</span>
+              <span>{statistics.monthlyNewVolunteers || 0} new volunteers this month</span>
+              <span>{statistics.monthlyEventParticipation || 0} volunteer check-ins this month</span>
+            </div>
+            <div className="quick-actions">
+              <button className="quick-action-button" onClick={() => navigate('/events/create')}>
+                <Calendar size={16} />
+                Create Event
+              </button>
+              <button className="quick-action-button" onClick={() => navigate('/volunteermatch')}>
+                <UserCheck size={16} />
+                Match Volunteers
+              </button>
+              <button className="quick-action-button" onClick={() => navigate('/eventreview')}>
+                <ClipboardCheck size={16} />
+                Review Events
+              </button>
+              <button className="quick-action-button" onClick={() => navigate('/eventreport')}>
+                <BarChart3 size={16} />
+                Reports
+              </button>
+            </div>
             {error && (
               <div className="error-message">
                 {error} - Using fallback data
@@ -449,9 +572,9 @@ const extraLinks = [
                       <h4 className="item-title">{volunteer.name}</h4>
                       <div className="item-details">
                         <div className="item-details-row">
-                          <span>{volunteer.events} events</span>
-                          <span>⭐ {volunteer.rating}</span>
-                          <span>{volunteer.totalHours} hours</span>
+                          <span>{getVolunteerEvents(volunteer)} events</span>
+                          <span>{getRatingText(volunteer.rating)}</span>
+                          <span>{getVolunteerHours(volunteer)} hours</span>
                         </div>
                         <div className="item-details-row with-margin">
                           <span className="expertise-text">
@@ -482,7 +605,10 @@ const extraLinks = [
                 <div className="item-list">
                   {upcomingEvents.map((event) => (
                     <div key={event.id} className="event-item">
-                      <h4 className="item-title">{event.event}</h4>
+                      <h4 className="item-title title-with-badge">
+                        {event.event}
+                        {event.status && <span className="status-badge">{event.status}</span>}
+                      </h4>
                       <div className="item-details">
                         <div className="item-details-row">
                           <span>{formatEventDate(event.date)}</span>
@@ -524,7 +650,22 @@ const extraLinks = [
 
             <div className="stat-card">
               <div className="stat-number purple">{statistics.eventsToFinalize}</div>
-              <div className="stat-label">Events to be Finalized</div>
+              <div className="stat-label">Events Ready for Review</div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-number amber">{statistics.completedEvents || 0}</div>
+              <div className="stat-label">Completed Events</div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-number slate">{statistics.totalVolunteerHours || 0}</div>
+              <div className="stat-label">Total Volunteer Hours</div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-number rose">{getRatingText(statistics.averageRating)}</div>
+              <div className="stat-label">Average Rating</div>
             </div>
           </div>
         </div>

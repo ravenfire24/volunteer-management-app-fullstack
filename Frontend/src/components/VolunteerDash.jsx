@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, User, LogOut, Calendar, Clock, MapPin, Users } from 'lucide-react';
-import NotificationButton from './Notification';
+import { Calendar, Clock, History, MapPin, Star, User, Users } from 'lucide-react';
 import NavigationBar from './Navigation';
 import {
   getVolunteerDashboard,
-  getRecentVolunteerHistory,
-  getNextUpcomingEvents,
   formatEventDate,
   formatEventTime
 } from '../helpers/volunteerhelpers';
@@ -14,20 +11,39 @@ import './VolunteerDash.css';
 
 export default function VolunteerDashboard() {
   const [volunteerName, setVolunteerName] = useState('Loading...');
-  const [notifications, setNotifications] = useState(0);
   const [volunteerHistory, setVolunteerHistory] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [statistics, setStatistics] = useState({
     total_hours: 0,
     events_completed: 0,
-    upcoming_events: 0
+    upcoming_events: 0,
+    average_rating: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const extraLinks = [];
+  const extraLinks = [
+    {
+      className: "nav-button",
+      link: "/profile",
+      logo: <User size={16} />,
+      text: "Profile"
+    },
+    {
+      className: "nav-button",
+      link: "/volunteerhistory",
+      logo: <History size={16} />,
+      text: "History"
+    },
+    {
+      className: "nav-button",
+      link: "/viewallevents",
+      logo: <Calendar size={16} />,
+      text: "Events"
+    },
+  ];
 
   // Load volunteer dashboard data
   useEffect(() => {
@@ -61,7 +77,12 @@ export default function VolunteerDashboard() {
   };
 
   const handleViewAllEvents = () => {
-    navigate("/ViewAllEvents");
+    navigate("/viewallevents");
+  };
+
+  const formatRating = (rating) => {
+    const numericRating = Number(rating);
+    return Number.isFinite(numericRating) && numericRating > 0 ? numericRating.toFixed(1) : 'Not rated';
   };
 
   // Helper function to format date for display (fallback for older date format)
@@ -73,7 +94,7 @@ export default function VolunteerDashboard() {
         // Handle legacy format like "March 15, 2025"
         return dateString;
       }
-    } catch (error) {
+    } catch {
       return dateString; // Return as-is if formatting fails
     }
   };
@@ -88,7 +109,7 @@ export default function VolunteerDashboard() {
         // Legacy format: "2:00 PM - 5:00 PM"
         return timeString;
       }
-    } catch (error) {
+    } catch {
       return timeString; // Return as-is if formatting fails
     }
   };
@@ -206,6 +227,32 @@ export default function VolunteerDashboard() {
           margin: 0;
         }
 
+        .quick-actions {
+          display: flex;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+          margin-top: 1rem;
+        }
+
+        .quick-action-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.625rem 1rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.375rem;
+          background: white;
+          color: #374151;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .quick-action-button:hover {
+          background: #f3f4f6;
+          color: #111827;
+        }
+
         .error-message {
           background-color: #fee2e2;
           border: 1px solid #fecaca;
@@ -295,6 +342,34 @@ export default function VolunteerDashboard() {
           gap: 0.25rem;
         }
 
+        .title-with-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        .status-badge, .rating-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          padding: 0.15rem 0.5rem;
+          border-radius: 9999px;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .status-badge {
+          background-color: #dcfce7;
+          color: #166534;
+          text-transform: uppercase;
+        }
+
+        .rating-badge {
+          background-color: #fef3c7;
+          color: #92400e;
+        }
+
         .view-all-button {
           color: #3b82f6;
           background: none;
@@ -352,6 +427,10 @@ export default function VolunteerDashboard() {
           color: #8b5cf6;
         }
 
+        .stat-number.amber {
+          color: #f59e0b;
+        }
+
         .stat-label {
           color: #6b7280;
         }
@@ -371,6 +450,16 @@ export default function VolunteerDashboard() {
             color: #d1d5db !important;
           }
 
+          .quick-action-button {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+            color: #f9fafb !important;
+          }
+
+          .quick-action-button:hover {
+            background-color: #374151 !important;
+          }
+
           .card, .stat-card {
             background-color: #1f2937 !important;
             border: 1px solid #374151 !important;
@@ -386,6 +475,16 @@ export default function VolunteerDashboard() {
 
           .stat-label {
             color: #d1d5db !important;
+          }
+
+          .status-badge {
+            background-color: #14532d !important;
+            color: #dcfce7 !important;
+          }
+
+          .rating-badge {
+            background-color: #78350f !important;
+            color: #fef3c7 !important;
           }
 
           .error-message {
@@ -423,6 +522,20 @@ export default function VolunteerDashboard() {
           <div className="welcome-section">
             <h2 className="welcome-title">Welcome, {volunteerName}!</h2>
             <p className="welcome-subtitle">Ready to make a difference today?</p>
+            <div className="quick-actions">
+              <button className="quick-action-button" onClick={() => navigate('/profile')}>
+                <User size={16} />
+                Update Profile
+              </button>
+              <button className="quick-action-button" onClick={handleViewAllEvents}>
+                <Calendar size={16} />
+                Find Events
+              </button>
+              <button className="quick-action-button" onClick={handleVolunteerMatching}>
+                <History size={16} />
+                View History
+              </button>
+            </div>
             {error && (
               <div className="error-message">
                 {error} - Using fallback data
@@ -444,7 +557,15 @@ export default function VolunteerDashboard() {
                   {volunteerHistory.length > 0 ? (
                     volunteerHistory.map((item) => (
                       <div key={item.id} className="history-item">
-                        <h4 className="item-title">{item.event}</h4>
+                        <h4 className="item-title title-with-badge">
+                          {item.event}
+                          {item.rating && (
+                            <span className="rating-badge">
+                              <Star size={12} />
+                              {formatRating(item.rating)}
+                            </span>
+                          )}
+                        </h4>
                         <div className="item-details">
                           <div className="item-details-row">
                             <span>{formatDisplayDate(item.date)}</span>
@@ -481,7 +602,10 @@ export default function VolunteerDashboard() {
                   {upcomingEvents.length > 0 ? (
                     upcomingEvents.map((event) => (
                       <div key={event.id} className="event-item">
-                        <h4 className="item-title">{event.event}</h4>
+                        <h4 className="item-title title-with-badge">
+                          {event.event}
+                          {event.status && <span className="status-badge">{event.status}</span>}
+                        </h4>
                         <div className="item-details">
                           <div className="item-details-row">
                             <span>{formatDisplayDate(event.date)}</span>
@@ -494,7 +618,7 @@ export default function VolunteerDashboard() {
                             </div>
                             <div className="item-detail-with-icon">
                               <Users size={14} />
-                              <span>{event.volunteers} volunteers</span>
+                              <span>{event.volunteers} spots remaining</span>
                             </div>
                           </div>
                         </div>
@@ -528,6 +652,10 @@ export default function VolunteerDashboard() {
             <div className="stat-card">
               <div className="stat-number purple">{statistics.upcoming_events}</div>
               <div className="stat-label">Upcoming Events</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number amber">{formatRating(statistics.average_rating)}</div>
+              <div className="stat-label">Average Rating</div>
             </div>
           </div>
         </div>
