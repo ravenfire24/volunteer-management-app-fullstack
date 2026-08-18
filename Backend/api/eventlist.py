@@ -20,6 +20,48 @@ event_parser.add_argument('event_description', type=str, required=True, help="Ev
 event_parser.add_argument('date', type=str, required=True, help="Date is required")
 event_parser.add_argument('volunteers_needed', type=int, required=True, help="Volunteers needed is required")
 
+
+def _parse_required_skill_names(required_skills):
+    """Return unique skill names from the comma-separated event field."""
+    if not required_skills:
+        return []
+
+    skill_names = []
+    seen = set()
+    for skill in str(required_skills).split(','):
+        skill_name = skill.strip()
+        normalized = skill_name.lower()
+        if skill_name and normalized not in seen:
+            skill_names.append(skill_name)
+            seen.add(normalized)
+    return skill_names
+
+
+def _sync_event_required_skills(cursor, event_id, required_skills):
+    """Keep the normalized required_skills table in sync with eventdetails."""
+    skill_names = _parse_required_skill_names(required_skills)
+
+    cursor.execute("DELETE FROM required_skills WHERE event_id = %s", (event_id,))
+
+    for skill_name in skill_names:
+        cursor.execute("SELECT skills_id FROM skills WHERE skill_name = %s", (skill_name,))
+        skill_row = cursor.fetchone()
+
+        if skill_row:
+            skill_id = skill_row['skills_id']
+        else:
+            cursor.execute(
+                "INSERT INTO skills (skill_name, skill_description) VALUES (%s, %s)",
+                (skill_name, skill_name)
+            )
+            skill_id = cursor.lastrowid
+
+        cursor.execute(
+            "INSERT INTO required_skills (event_id, skills_id) VALUES (%s, %s)",
+            (event_id, skill_id)
+        )
+
+
 class EventList(Resource):
     @jwt_required()
     def get(self):
@@ -131,6 +173,9 @@ class EventList(Resource):
             if data["volunteers_needed"] <= 0:
                 return {"error": "Volunteers needed must be a positive number"}, 400
 
+            if not _parse_required_skill_names(data["required_skills"]):
+                return {"error": "At least one required skill must be selected"}, 400
+
             # Validate urgency matches your ENUM values
             valid_urgency_levels = ['Low', 'Medium', 'High']
             if data["urgency"] not in valid_urgency_levels:
@@ -175,6 +220,7 @@ class EventList(Resource):
             print(f"Executing query with values: {event_values}")
             cursor.execute(event_query, event_values)
             event_id = cursor.lastrowid
+            _sync_event_required_skills(cursor, event_id, data["required_skills"])
             conn.commit()
 
             print(f"Event created successfully with ID: {event_id}")
@@ -304,6 +350,9 @@ class Event(Resource):
             if data["volunteers_needed"] <= 0:
                 return {"error": "Volunteers needed must be a positive number"}, 400
 
+            if not _parse_required_skill_names(data["required_skills"]):
+                return {"error": "At least one required skill must be selected"}, 400
+
             # Validate urgency
             valid_urgency_levels = ['Low', 'Medium', 'High']
             if data["urgency"] not in valid_urgency_levels:
@@ -344,6 +393,7 @@ class Event(Resource):
             )
 
             cursor.execute(update_query, update_values)
+            _sync_event_required_skills(cursor, event_id, data["required_skills"])
             conn.commit()
 
             return {"message": "Event updated successfully!"}, 200

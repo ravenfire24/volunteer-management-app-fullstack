@@ -1,5 +1,24 @@
 import pytest
 from unittest.mock import patch, MagicMock
+from api.db import get_db
+
+
+def _required_skill_names_for_event(app, event_id):
+    with app.app_context():
+        conn = get_db()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                SELECT s.skill_name
+                FROM required_skills rs
+                JOIN skills s ON rs.skills_id = s.skills_id
+                WHERE rs.event_id = %s
+                ORDER BY s.skill_name ASC
+            """, (event_id,))
+            return [row["skill_name"] for row in cursor.fetchall()]
+        finally:
+            cursor.close()
+            conn.close()
 
 
 class TestEventListGet:
@@ -136,6 +155,24 @@ class TestEventListPost:
         # Accept success or failure, just need code execution
         assert response.status_code in [201, 400, 500]
 
+    def test_post_syncs_required_skills_table(self, client, access_token_admin):
+        """Test POST also writes normalized event skill links."""
+        event = self.base_event.copy()
+        event["required_skills"] = "Communication, First Aid, Communication"
+
+        response = client.post(
+            "/api/eventlist/",
+            headers={"Authorization": f"Bearer {access_token_admin}"},
+            json=event
+        )
+
+        assert response.status_code == 201
+        event_id = response.json["event_id"]
+        assert _required_skill_names_for_event(client.application, event_id) == [
+            "Communication",
+            "First Aid"
+        ]
+
     def test_post_database_error(self, client, access_token_admin, monkeypatch):
         """Test database error in POST - hits lines 100-102"""
         def mock_get_db():
@@ -171,6 +208,7 @@ class TestEventPut:
     base_event = {
         "status" : "pending"
     }
+    full_event = TestEventListPost.base_event.copy()
 
     def test_put_nonexistent_event(self, client, access_token_admin):
         """Test PUT nonexistent event - hits lines 290-349 (Event.put method)"""
@@ -193,6 +231,31 @@ class TestEventPut:
             json=self.base_event
         )
         assert response.status_code == 500
+
+    def test_put_resyncs_required_skills_table(self, client, access_token_admin):
+        """Test PUT replaces normalized event skill links."""
+        create_response = client.post(
+            "/api/eventlist/",
+            headers={"Authorization": f"Bearer {access_token_admin}"},
+            json=self.full_event
+        )
+        assert create_response.status_code == 201
+        event_id = create_response.json["event_id"]
+
+        updated_event = self.full_event.copy()
+        updated_event["required_skills"] = "Logistics, Food Service"
+
+        update_response = client.put(
+            f"/api/eventlist/{event_id}",
+            headers={"Authorization": f"Bearer {access_token_admin}"},
+            json=updated_event
+        )
+
+        assert update_response.status_code == 200
+        assert _required_skill_names_for_event(client.application, event_id) == [
+            "Food Service",
+            "Logistics"
+        ]
 
 
 class TestEventDelete:
