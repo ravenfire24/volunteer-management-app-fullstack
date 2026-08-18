@@ -52,7 +52,6 @@ export async function register(data){
 
       if (parsed.message == "Registration successful!" || parsed.message == "User with this email already exists, but is not verified."){
         // Register was successful
-        alert(parsed.message);
         return true;
       }
       else{
@@ -81,7 +80,6 @@ export async function verifyEmail(data){
 
       if (parsed.message == "Verification code sent successfully" || parsed.message == "A code has already been issued. Please refer to your previous email" ){
         // Email was successfully sent
-        alert(parsed.message);
         return true;
       }
       else{
@@ -113,7 +111,6 @@ export async function confirmCode(data){
 
       if (parsed.message == "Verified"){
         // verfication was successful
-        alert(parsed.message);
         return true;
       }
       else{

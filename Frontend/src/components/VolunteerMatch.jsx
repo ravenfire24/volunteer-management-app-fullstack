@@ -15,7 +15,6 @@ async function sendNotification(data) {
     read: false
   };
   await createNotification(newNotification);
-  alert(`Notification sent to ${data.volunteer.email}`);
 }
 
 
@@ -200,8 +199,6 @@ const extraLinks = [
       }
 
       const data = await response.json();
-      alert(`Event "${selectedEvent.event_name}" has been successfully finalized!`);
-      
       // Reset the page after successful finalization
       setTimeout(() => {
         setSelectedEvent(null);

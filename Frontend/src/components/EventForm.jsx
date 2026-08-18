@@ -369,7 +369,6 @@ useEffect(() => {
         throw new Error(responseData.error || responseData.message || `Failed to ${isEditMode ? 'update' : 'create'} event`);
       }
 
-      alert(`Event ${isEditMode ? 'updated' : 'created'} successfully!`);
       navigate("/eventmanagement");
 
     } catch (error) {

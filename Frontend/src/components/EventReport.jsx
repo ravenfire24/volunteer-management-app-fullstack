@@ -323,8 +323,6 @@ const generatePDF = () => {
     const fileName = `volunteer_events_report_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
     
-    alert(`PDF "${fileName}" with volunteer details generated successfully!`);
-    
   } catch (error) {
     console.error('PDF Error:', error);
     alert(`PDF generation failed: ${error.message}`);
@@ -487,8 +485,6 @@ const generateCSV = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    alert(`CSV "${fileName}" with comprehensive volunteer details generated successfully!`);
     
   } catch (error) {
     console.error('CSV Error:', error);

@@ -34,7 +34,6 @@ async function sendNotification(volunteer, event_id) {
     read: false
   };
   await createNotification(newNotification);
-  alert(`Notification sent to ${volunteer.email}`);
 }
 
 export default function EventManagementPage() {
@@ -208,9 +207,6 @@ export default function EventManagementPage() {
       }
 
       setEvents(events.filter(event => event.id !== eventId));
-      alert("Event deleted successfully!");
-
-
     } catch (error) {
       console.error("Delete failed:", error);
       alert("Failed to delete event. Please try again.");

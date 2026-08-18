@@ -15,7 +15,6 @@ async function sendNotification(reviewingVolunteer,selectedEvent) {
     read: false
   };
   await createNotification(newNotification);
-  alert(`Notification sent to ${reviewingVolunteer.email}`);
 }
 
 export default function EventReviewPage() {
@@ -168,7 +167,6 @@ const extraLinks = [
         throw new Error(errorData.error || "Failed to submit review");
       }
 
-      alert("Review submitted successfully!");
       void sendNotification(reviewingVolunteer,selectedEvent).catch((error) => {
         console.error("Failed to send review notification:", error);
       });
@@ -209,7 +207,6 @@ const extraLinks = [
         throw new Error(errorData.error || "Failed to complete event");
       }
 
-      alert("Event marked as completed successfully!");
       handleBackToEvents();
 
     } catch (error) {

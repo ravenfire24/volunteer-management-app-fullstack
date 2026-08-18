@@ -302,7 +302,6 @@ export default function ProfileForm() {
         result = await createProfile(formData);
       }
 
-      alert(`Profile ${isEditMode ? 'updated' : 'created'} successfully!`);
       navigate('/volunteerdash');
     } catch (error) {
       console.error('Error saving profile:', error);
