@@ -2,7 +2,7 @@
 This application is designed for a non-profit organization to efficiently manage and optimize volunteer activities. It helps coordinate volunteers by matching them to suitable events and tasks based on their skills, availability, and preferences.
 
 
-## 🌐 Live Demo deployed
+## 🌐 Live Demo Deployed
 
 https://volunteer-management-app-fullstack.vercel.app
 
