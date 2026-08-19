@@ -1,4 +1,4 @@
-import { useState,  useEffect } from 'react';
+import { useState,  useEffect, useRef } from 'react';
 import {Bell, RefreshCcw } from 'lucide-react';
 import './Notification.css';
 import { deleteNotification,
@@ -11,6 +11,7 @@ import { deleteNotification,
 export default function Notificationbutton() {
     // State to track whether the dropdown menu is visible
     const [showDropDown, setShowDropDown] = useState(false);
+    const notificationRef = useRef(null);
     // State to track amount of unread notifications
     const [unreadCount, setUnreadCount] = useState(0);
     // State to hold user notifications
@@ -36,6 +37,19 @@ export default function Notificationbutton() {
      // Run refreshFunction once on mount to fetch initial data
         useEffect(() => {
             refreshFunction();
+        }, []);
+
+        useEffect(() => {
+            const handleClickOutside = (event) => {
+                if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+                    setShowDropDown(false);
+                }
+            };
+
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
         }, []);
 
     
@@ -99,7 +113,7 @@ export default function Notificationbutton() {
 
     // Render the notification button and dropdown menu
     return (
-        <div className="notification-container" style={{ position: 'relative', display: 'inline-block' }}>
+        <div ref={notificationRef} className="notification-container" style={{ position: 'relative', display: 'inline-block' }}>
         {/* Notification button that toggles dropdown on click */}
         {/* Bell emoji from https://emojipedia.org/bell */}
         <button onClick={toggleDropdown} className="bell-button" ><Bell size={20} /></button>
