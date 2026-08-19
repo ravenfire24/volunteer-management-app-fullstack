@@ -386,7 +386,8 @@ export default function Login({ users, setLoggedInUser }) {
 
             {/* Login Button */}
             <button 
-              type="submit" 
+              type="button" 
+              onClick={handleLogin}
               className="login-button"
             >
               Sign In
