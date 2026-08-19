@@ -4,7 +4,6 @@ import './VolunteerDash.css';
 import * as VhHelpers from '../helpers/volunteerHistoryHelpers.js';
 import NavigationBar from './Navigation.jsx';
 import { ArrowUpDown } from 'lucide-react';
-import {checkTokenTime} from "../helpers/authHelpers"
 
 export default function VolunteerHistoryTable(){
 

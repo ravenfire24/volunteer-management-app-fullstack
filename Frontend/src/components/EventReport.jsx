@@ -215,7 +215,7 @@ const generatePDF = () => {
         doc.setFontSize(9);
         doc.setTextColor(80);
         
-        event.volunteers.forEach((volunteer, volIndex) => {
+        event.volunteers.forEach((volunteer) => {
           // Check if we need a new page for volunteers
           if (yPosition > 270) {
             doc.addPage();

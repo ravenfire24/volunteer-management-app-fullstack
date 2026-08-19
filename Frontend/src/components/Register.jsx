@@ -4,7 +4,7 @@ import { User, Lock, UserPlus, Mail } from 'lucide-react';
 import {register, verifyEmail} from '../helpers/authHelpers';
 
 
-export default function Register({ users, setUsers }) {
+export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('volunteer');

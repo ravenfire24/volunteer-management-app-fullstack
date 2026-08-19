@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import NavigationBar from './Navigation';
 import { History, Settings, Calendar, MapPin, Users, AlertCircle, FileText, Clock, User, Award, Phone, Mail, UserCheck, ClipboardCheck } from 'lucide-react';
 import { createNotification } from '../helpers/notificationHelpers';
@@ -19,7 +18,6 @@ async function sendNotification(data) {
 
 
 export default function VolunteerMatch() {
-  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [filteredVolunteers, setFilteredVolunteers] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -198,7 +196,6 @@ const extraLinks = [
         return;
       }
 
-      const data = await response.json();
       // Reset the page after successful finalization
       setTimeout(() => {
         setSelectedEvent(null);
@@ -290,7 +287,7 @@ const extraLinks = [
         month: 'long',
         day: 'numeric'
       });
-    } catch (error) {
+    } catch {
       return dateString;
     }
   };
@@ -741,7 +738,7 @@ const extraLinks = [
                       Assigned Volunteers:
                     </h4>
                     
-                    {filteredVolunteers.map((volunteer, index) => (
+                    {filteredVolunteers.map((volunteer) => (
                       <div key={volunteer.email} className="volunteer-info" style={{marginBottom: '1rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '1rem'}}>
                         <div className="info-item">
                           <User size={16} color="#3b82f6" />

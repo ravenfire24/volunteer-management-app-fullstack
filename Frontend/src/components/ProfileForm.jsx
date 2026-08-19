@@ -5,7 +5,6 @@ import {
   getUserProfile,
   createProfile,
   updateProfile,
-  deleteProfile,
   getSkillsOptions,
   getStatesOptions
 } from '../helpers/profilehelpers';
@@ -309,11 +308,10 @@ export default function ProfileForm() {
         phoneNumber: extractPhoneDigits(form.phoneNumber)
       };
 
-      let result;
       if (isEditMode) {
-        result = await updateProfile(formData);
+        await updateProfile(formData);
       } else {
-        result = await createProfile(formData);
+        await createProfile(formData);
       }
 
       navigate('/volunteerdash');
@@ -325,7 +323,7 @@ export default function ProfileForm() {
     }
   };
 
-  const handlecancel = async (e) => {
+  const handlecancel = async () => {
     if (await confirmAction('Are you sure you want to cancel? All unsaved changes will be lost.', { confirmText: 'Leave' })) {
       navigate('/volunteerdash');
     }

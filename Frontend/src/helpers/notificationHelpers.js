@@ -41,7 +41,7 @@ export async function FlipReadStatus(notificationId,data){
     // First validate that user JWT token is still vaild
     await checkTokenTime();
 
-    const response = await fetch(`http://127.0.0.1:5000/api/notification/?notiId=${notificationId}`, {
+    await fetch(`http://127.0.0.1:5000/api/notification/?notiId=${notificationId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export async function deleteNotification(notificationId) {
     // First validate that user JWT token is still vaild
     await checkTokenTime();
 
-    const response = await fetch(`http://127.0.0.1:5000/api/notification/?notiId=${notificationId}`, {
+    await fetch(`http://127.0.0.1:5000/api/notification/?notiId=${notificationId}`, {
         method: "DELETE",
          headers: {
             "Authorization" : `Bearer ${sessionStorage.getItem("access_token")}`

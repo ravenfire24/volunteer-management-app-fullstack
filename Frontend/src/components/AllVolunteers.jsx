@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Users, Mail, Calendar, Star, Clock, Award, Settings, UserCheck, ClipboardCheck } from 'lucide-react';
 import NavigationBar from './Navigation';
 import { checkTokenTime } from "../helpers/authHelpers";
@@ -10,7 +9,6 @@ export default function AllVolunteers() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [volunteersPerPage] = useState(15);
-  const navigate = useNavigate();
   const [openReportMenuId, setOpenReportMenuId] = useState(null);
 
   const extraLinks = [
@@ -69,11 +67,6 @@ export default function AllVolunteers() {
       setLoading(false);
     }
   };
-
-  const handleVolunteerClick = (volunteerId) => {
-    navigate(`/volunteers/${volunteerId}`);
-  };
-
 
   const generateReport = (volunteerId, format) => {
     const token = sessionStorage.getItem('access_token');

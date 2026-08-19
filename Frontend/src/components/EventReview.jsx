@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, Users, X, UserCheck, Settings, History, Star, ChevronLeft, ChevronRight, ClipboardCheck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import NavigationBar from './Navigation';
 import { createNotification } from '../helpers/notificationHelpers';
 import { checkTokenTime } from "../helpers/authHelpers";
@@ -33,8 +32,6 @@ export default function EventReviewPage() {
     notes: ''
   });
   
-  const navigate = useNavigate();
-
 const extraLinks = [
   {
     className: "nav-button",
@@ -224,7 +221,7 @@ const extraLinks = [
         month: 'long',
         day: 'numeric'
       });
-    } catch (error) {
+    } catch {
       return dateString;
     }
   };
