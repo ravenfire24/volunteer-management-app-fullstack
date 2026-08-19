@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, Calendar, Award, FileText, Home, Phone, Clock } from 'lucide-react';
 import {
@@ -14,11 +14,25 @@ import { confirmAction } from '../helpers/dialogs';
 const Select = ({ options, isMulti, placeholder, onChange, value, disabled = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(value || (isMulti ? [] : null));
+  const selectRef = useRef(null);
 
   // ✅ Sync selected state when value prop changes
   useEffect(() => {
     setSelected(value || (isMulti ? [] : null));
   }, [value, isMulti]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleOptionClick = (option) => {
     if (disabled) return;
@@ -37,7 +51,7 @@ const Select = ({ options, isMulti, placeholder, onChange, value, disabled = fal
   };
 
   return (
-    <div className="select-container">
+    <div className="select-container" ref={selectRef}>
       <div
         className={`select-display ${disabled ? 'disabled' : ''}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, MapPin, Users, AlertCircle, FileText, Clock, Home } from 'lucide-react';
 import { confirmAction } from '../helpers/dialogs';
@@ -6,10 +6,24 @@ import { confirmAction } from '../helpers/dialogs';
 const Select = ({ options, isMulti, placeholder, onChange, value }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(value || (isMulti ? [] : null));
+  const selectRef = useRef(null);
 
   useEffect(() => {
     setSelected(value || (isMulti ? [] : null));
   }, [value, isMulti]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleOptionClick = (option) => {
     if (isMulti) {
@@ -26,7 +40,7 @@ const Select = ({ options, isMulti, placeholder, onChange, value }) => {
   };
 
   return (
-    <div className="select-container">
+    <div className="select-container" ref={selectRef}>
       <div className="select-display" onClick={() => setIsOpen(!isOpen)}>
         {isMulti ? (
           selected.length > 0 ? selected.map(s => s.label).join(', ') : placeholder
