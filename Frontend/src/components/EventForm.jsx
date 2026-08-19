@@ -225,7 +225,7 @@ useEffect(() => {
       { field: 'city', name: 'City' },
       { field: 'zipcode', name: 'Zip Code' },
       { field: 'urgency', name: 'Urgency' },
-      { field: 'location_name', name: 'Location Name' },
+      { field: 'location_name', name: 'Venue / Place Name' },
       { field: 'event_duration', name: 'Event Duration' },
       { field: 'event_description', name: 'Event Description' },
       { field: 'date', name: 'Event Date' },
@@ -832,11 +832,11 @@ useEffect(() => {
                 {errors.urgency && <div className="error-message">{errors.urgency}</div>}
               </div>
 
-              {/* Location Name */}
+              {/* Venue / Place Name */}
               <div className="form-group">
                 <label className="form-label">
                   <MapPin size={16} />
-                  Location Name*
+                  Venue / Place Name*
                 </label>
                 <input
                   type="text"
@@ -844,7 +844,7 @@ useEffect(() => {
                   className={`form-input ${errors.location_name ? 'error' : ''}`}
                   value={form.location_name}
                   onChange={(e) => setForm({ ...form, location_name: e.target.value })}
-                  placeholder="Enter location/venue name"
+                  placeholder="Enter venue or place name"
                 />
                 {errors.location_name && <div className="error-message">{errors.location_name}</div>}
               </div>
