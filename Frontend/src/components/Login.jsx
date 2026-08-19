@@ -332,7 +332,7 @@ export default function Login({ users, setLoggedInUser }) {
             />
           )}
 
-          <div className="login-form">
+          <form className="login-form" onSubmit={handleLogin}>
             {loginError && <p className="login-error">{loginError}</p>}
 
             {/* Role Selection */}
@@ -387,12 +387,11 @@ export default function Login({ users, setLoggedInUser }) {
             {/* Login Button */}
             <button 
               type="submit" 
-              onClick={handleLogin}
               className="login-button"
             >
               Sign In
             </button>
-          </div>
+          </form>
 
           {/* Register Link */}
           <div className="login-footer">
